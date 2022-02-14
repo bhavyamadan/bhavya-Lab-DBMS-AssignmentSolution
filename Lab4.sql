@@ -167,4 +167,4 @@ CASE
 	WHEN rating.rat_ratstars>4 THEN 'Genuine Suppliers'
     WHEN rating.rat_ratstars>2 THEN 'Average Suppliers'
     ELSE 'Supplier should not be considered'
-END AS verdict from rating inner join supplier on supplier.supp_id=rating.supp_id;Select category.* from `order`  inner join ProductDetails on `order`.prod_id = ProductDetails.prod_id inner join product on product.pro_id=productDetails.pro_id  inner join category on category.cat_id=product.cat_id having min(`order`.ord_amount) LIMIT 0, 2000
+END AS verdict from rating inner join supplier on supplier.supp_id=rating.supp_id;
