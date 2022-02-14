@@ -112,7 +112,7 @@ insert into `rating` values(5, 4, 5, 4);
 
 /*---------------------------------------------------------------------------*/
 /* 3. Display the number of the customer group by their genders who have 
-placed any order of amount greater than or equal to Rs.3000.*/
+	  placed any order of amount greater than or equal to Rs.3000.*/
 /*---------------------------------------------------------------------------*/
 select customer.cus_gender, count(customer.cus_gender) as count from customer 
 inner join `order` on customer.cus_id = `order`.cus_id where `order`.ord_amount >= 3000
@@ -120,7 +120,7 @@ group by customer.cus_gender;
 
 /*---------------------------------------------------------------------------*/
 /* 4. Display all the orders along with the product name ordered by a customer 
-having Customer_Id=2. */
+	  having Customer_Id=2. */
 /*---------------------------------------------------------------------------*/
 select `order`.*, product.pro_name from `order`, productDetails, product where 
 `order`.cus_id = 2 and `order`.prod_id = productDetails.prod_id and 
@@ -136,32 +136,35 @@ having count(productDetails.supp_id)>1) group by supplier.supp_id;
 /*---------------------------------------------------------------------------*/
 /* 6. Find the category of the product whose order amount is minimum. */
 /*---------------------------------------------------------------------------*/
-select category.* from `order` inner join productDetails on 
-`order`.prod_id = productDetails.prod_id inner join product on 
-product.pro_id = productDetails.pro_id inner join category on
-category.cat_id=product.cat_id having min(`order`.ord_amount);
+select category.* from `order`, productDetails, product, category
+where `order`.prod_id = productDetails.prod_id
+and productDetails.pro_id = product.pro_id
+and product.cat_id = category.cat_id
+and `order`.ord_amount = (SELECT MIN(ord_amount) FROM `order`);
 
-select category.* from product where product.pro_id =  
-(select prod_id from `order` where ord_amount=(select min(ord_amount) 
-from `order`));
 /*---------------------------------------------------------------------------*/
-/* 7. */
+/* 7. Display the Id and Name of the Product ordered after “2021-10-05”. */
 /*---------------------------------------------------------------------------*/
 select product.pro_id, product.pro_name from `order` inner join productDetails 
 on productDetails.prod_id = `order`.prod_id inner join product on 
 product.pro_id = productDetails.pro_id where `order`.ord_date > "2021-10-05";
 
 /*---------------------------------------------------------------------------*/
-/* 8. */
+/* 8. Display customer name and gender whose names start or end with 
+      character 'A'. */
 /*---------------------------------------------------------------------------*/
 select customer.cus_name, customer.cus_gender from customer where
 customer.cus_name like 'A%' or customer.cus_name like '%A';
+
 /*---------------------------------------------------------------------------*/
-/* */
+/* 9. Create a stored procedure to display the Rating for a Supplier if any 
+	  along with the Verdict on that rating if any like if rating >4 then 
+      “Genuine Supplier” if rating >2 “Average Supplier” else “Supplier should 
+      not be considered”. */
 /*---------------------------------------------------------------------------*/
 select supplier.supp_id, supplier.supp_name, rating.rat_ratstars,
 CASE
 	WHEN rating.rat_ratstars>4 THEN 'Genuine Suppliers'
     WHEN rating.rat_ratstars>2 THEN 'Average Suppliers'
     ELSE 'Supplier should not be considered'
-END AS verdict from rating inner join supplier on supplier.supp_id=rating.supp_id;
+END AS verdict from rating inner join supplier on supplier.supp_id=rating.supp_id;Select category.* from `order`  inner join ProductDetails on `order`.prod_id = ProductDetails.prod_id inner join product on product.pro_id=productDetails.pro_id  inner join category on category.cat_id=product.cat_id having min(`order`.ord_amount) LIMIT 0, 2000
